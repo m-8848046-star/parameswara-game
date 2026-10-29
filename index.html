@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Misi Parameswara</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #102b38; font-family: Arial, sans-serif; }
+  .game { width: min(100vw, 1400px); padding: 12px; }
+  .scene { position: relative; width: 100%; aspect-ratio: 1866 / 746; overflow: hidden; background: #102b38; }
+  .scene img { display: block; width: 100%; height: 100%; object-fit: fill; }
+  .start-button { position: absolute; left: 35.7%; top: 82.5%; width: 31.5%; height: 16%; border: 0; border-radius: 18px; background: transparent; cursor: pointer; padding: 0; }
+  .start-button:focus-visible { outline: 4px solid white; outline-offset: 3px; }
+  .start-button:active { transform: translateY(5px) scale(.97); }
+  .start-button::after { content: ''; position: absolute; inset: 0; border-radius: 18px; box-shadow: 0 5px 0 rgba(0,0,0,0); transition: box-shadow .08s; }
+  .start-button:active::after { box-shadow: inset 0 5px 10px rgba(75, 32, 0, .22); }
+  .next-button { position: absolute; right: 2%; bottom: 2%; border: 0; border-radius: 12px; padding: 10px 16px; font-size: clamp(12px, 1.5vw, 18px); font-weight: bold; background: #ffcf45; color: #422400; cursor: pointer; box-shadow: 0 4px 0 #a45a0c; }
+  .next-button:active { transform: translateY(3px); box-shadow: 0 1px 0 #a45a0c; }
+  .hint { margin: 8px 0 0; color: #fff; text-align: center; font-size: 13px; }
+  @media (max-width: 600px) { .game { padding: 4px; } .start-button { border-radius: 8px; } .next-button { padding: 5px 8px; } }
+</style>
+</head>
+<body>
+<main class="game">
+  <section class="scene" id="scene" aria-label="Misi Parameswara">
+    <img id="scene-image" src="misi.png" alt="Misi Parameswara - halaman permulaan">
+    <button class="start-button" id="start" aria-label="Jom mulakan pengembaraan kita!" title="Jom mulakan pengembaraan kita!"></button>
+  </section>
+  <p class="hint" id="hint">Klik butang “Jom mulakan pengembaraan kita!” pada gambar untuk meneruskan.</p>
+</main>
+<script>
+  const image = document.getElementById('scene-image');
+  const start = document.getElementById('start');
+  const hint = document.getElementById('hint');
+  let page = 1;
+  function goNext() {
+    if (page !== 1) return;
+    start.animate([
+      { transform: 'translateY(0) scale(1)' },
+      { transform: 'translateY(5px) scale(.97)' },
+      { transform: 'translateY(5px) scale(.97)' }
+    ], { duration: 220, easing: 'ease-out' });
+    window.setTimeout(() => {
+      image.src = 'ob.png';
+      image.alt = 'Halaman seterusnya';
+      start.hidden = true;
+      page = 2;
+      hint.textContent = 'Anda telah memasuki halaman seterusnya.';
+      const next = document.createElement('button');
+      next.className = 'next-button';
+      next.textContent = 'Kembali';
+      next.addEventListener('click', () => {
+        image.src = 'misi.png';
+        image.alt = 'Misi Parameswara - halaman permulaan';
+        start.hidden = false;
+        next.remove();
+        page = 1;
+        hint.textContent = 'Klik butang “Jom mulakan pengembaraan kita!” pada gambar untuk meneruskan.';
+      });
+      document.getElementById('scene').appendChild(next);
+    }, 220);
+  }
+  start.addEventListener('click', goNext);
+  image.addEventListener('error', () => {
+    hint.textContent = 'Imej tidak ditemui. Pastikan misi.png dan ob.png berada dalam folder yang sama dengan index.html.';
+  });
+</script>
+</body>
+</html>
